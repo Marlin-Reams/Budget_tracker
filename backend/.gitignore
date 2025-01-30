@@ -1,0 +1,32 @@
+# Ignore Node.js dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Ignore build folder
+build/
+
+# Ignore system files
+# Ignore Python virtual environment
+venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignore Firebase credentials
+firebase_credentials.json
+secrets/
+
+# Ignore logs and system files
+logs/
+*.log
+.DS_Store
+Thumbs.db
+
+# Ignore environment variables
+.env
+
+Thumbs.db
+
+# Ignore environment variables
+.env
