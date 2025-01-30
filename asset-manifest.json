@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/Marlin-Reams/Budget_tracker.git/static/css/main.e6c13ad2.css",
+    "main.js": "/Marlin-Reams/Budget_tracker.git/static/js/main.aff4960c.js",
+    "static/js/156.7f83abca.chunk.js": "/Marlin-Reams/Budget_tracker.git/static/js/156.7f83abca.chunk.js",
+    "index.html": "/Marlin-Reams/Budget_tracker.git/index.html",
+    "main.e6c13ad2.css.map": "/Marlin-Reams/Budget_tracker.git/static/css/main.e6c13ad2.css.map",
+    "main.aff4960c.js.map": "/Marlin-Reams/Budget_tracker.git/static/js/main.aff4960c.js.map",
+    "156.7f83abca.chunk.js.map": "/Marlin-Reams/Budget_tracker.git/static/js/156.7f83abca.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.aff4960c.js"
+  ]
+}
