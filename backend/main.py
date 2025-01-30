@@ -39,6 +39,10 @@ class MonthlyBudget(BaseModel):
     boss_count: int
     rubber_gp: float
 
+@app.get("/")
+def read_root():
+    return {"message": "API is running!"}
+
 @app.get("/get-monthly-budget")
 def get_monthly_budget(month: str):
     try:
