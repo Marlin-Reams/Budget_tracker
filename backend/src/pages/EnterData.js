@@ -27,7 +27,7 @@ const EnterData = () => {
     }
 
     try {
-      const res = await axios.get(`http://127.0.0.1:8000/get-budget/${selectedDate}`);
+      const res = await axios.get(`https://budget-tracker-okow.onrender.com/get-budget/${selectedDate}`);
       setFormData(res.data);
       setIsEditing(true);
     } catch (error) {
@@ -55,8 +55,8 @@ const EnterData = () => {
 
     try {
       const url = isEditing
-        ? `http://127.0.0.1:8000/update-budget/${selectedDate}`
-        : "http://127.0.0.1:8000/update-budget";
+        ? `https://budget-tracker-okow.onrender.com/update-budget/${selectedDate}`
+        : "https://budget-tracker-okow.onrender.com/update-budget";
       const method = isEditing ? "put" : "post";
 
       await axios[method](url, { date: selectedDate, ...formData });
@@ -78,7 +78,7 @@ const EnterData = () => {
     if (!window.confirm(`Are you sure you want to delete the entry for ${selectedDate}?`)) return;
 
     try {
-      await axios.delete(`http://127.0.0.1:8000/delete-budget/${selectedDate}`);
+      await axios.delete(`https://budget-tracker-okow.onrender.com/delete-budget/${selectedDate}`);
       alert("Entry deleted successfully!");
       setFormData({
         total_sales: "",

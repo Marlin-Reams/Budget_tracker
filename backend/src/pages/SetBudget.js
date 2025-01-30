@@ -20,7 +20,7 @@ const SetBudget = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`http://127.0.0.1:8000/set-monthly-budget?month=${month}`, budget);
+      await axios.post(`https://budget-tracker-okow.onrender.com/set-monthly-budget?month=${month}`, budget);
       alert("Monthly budget set successfully!");
     } catch (error) {
       alert("Error setting budget.");

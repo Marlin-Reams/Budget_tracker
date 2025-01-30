@@ -201,9 +201,9 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const progressRes = await axios.get(`http://127.0.0.1:8000/get-progress?month=${month}`);
-        const targetsRes = await axios.get(`http://127.0.0.1:8000/calculate-targets?month=${month}`);
-        const goalRes = await axios.get(`http://127.0.0.1:8000/get-monthly-budget?month=${month}`);
+        const progressRes = await axios.get(`https://budget-tracker-okow.onrender.com/get-progress?month=${month}`);
+        const targetsRes = await axios.get(`https://budget-tracker-okow.onrender.com/calculate-targets?month=${month}`);
+        const goalRes = await axios.get(`https://budget-tracker-okow.onrender.com/get-monthly-budget?month=${month}`);
 
         setProgress(progressRes.data.progress);
         setTargets(targetsRes.data.daily_targets);
