@@ -11,3 +11,156 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.budget-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.budget-table th, .budget-table td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #dddddd;
+  font-size: 16px;
+}
+
+.budget-table th {
+  background-color: #C8102E;
+  color: white;
+  font-weight: bold;
+}
+
+.budget-table tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+.budget-table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+.budget-table td {
+  font-weight: bold;
+}
+
+.budget-table .progress {
+  color: #0047BA;
+}
+
+.budget-table .remaining {
+  color: #C8102E;
+}
+
+.budget-table .progress-percentage {
+  font-weight: bold;
+}
+
+.budget-table .green {
+  color: green;
+}
+
+.budget-table .orange {
+  color: orange;
+}
+
+.budget-table .red {
+  color: red;
+}
+
+
+.budget-table, .adjusted-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #FFFFFF;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+  
+}
+
+.budget-table th, .adjusted-table th {
+  background-color: #C8102E;
+  color: #FFFFFF;
+  padding: 12px;
+  text-align: left;
+}
+
+.budget-table td, .adjusted-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #DDDDDD;
+}
+
+.legend-container {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+/* Adjusted Daily Targets Table */
+.adjusted-targets-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.adjusted-targets-table th, .adjusted-targets-table td {
+  padding: 12px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+  font-size: 16px;
+}
+
+.adjusted-targets-table th {
+  background-color: #C8102E;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.adjusted-targets-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.adjusted-targets-table tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.adjusted-targets-table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Make text bold and readable */
+.adjusted-targets-table td {
+  font-weight: bold;
+}
+
+/* Make sure adjusted goal text color matches indicator */
+.adjusted-targets-table td[colored] {
+  font-weight: bold;
+}
+
+/* Legend section styling */
+.legend-container {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 5px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.legend-container ul {
+  padding-left: 20px;
+  margin: 5px 0;
+}
+
+.legend-container li {
+  font-weight: bold;
+  list-style-type: none;
+}
