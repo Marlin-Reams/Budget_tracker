@@ -11,6 +11,7 @@ const DailyMessage = ({ progress, monthlyGoal }) => {
   const year = new Date().getFullYear();
   const daysInMonth = new Date(year, month, 0).getDate();
   const expectedProgressPercent = (today / daysInMonth) * 100;
+  
 
   const budgetCategories = [
     "total_sales",
@@ -47,6 +48,7 @@ const DailyMessage = ({ progress, monthlyGoal }) => {
     <Card sx={{ border: "3px solid #C8102E", backgroundColor: "#F4F4F4", marginBottom: "20px" }}>
       <CardContent>
         <Typography variant="h5" sx={{ color: "#0047BA", mb: 2 }}>📊 Daily Performance Summary</Typography>
+        
         <Typography variant="body1">
           {good.length > 0 && (
             <span style={{ color: "green", fontWeight: "bold" }}>

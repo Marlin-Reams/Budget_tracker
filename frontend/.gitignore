@@ -50,3 +50,5 @@ out/
 *.gz
 *.zip
 
+backend/firebase_credentials.json
+

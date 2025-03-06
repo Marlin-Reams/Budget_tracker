@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Container, Button, TextField, Typography } from "@mui/material";
 
+
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://budget-tracker-okow.onrender.com";
+
 const EnterData = () => {
   const [selectedDate, setSelectedDate] = useState("");
   const [formData, setFormData] = useState({
@@ -27,7 +30,7 @@ const EnterData = () => {
     }
 
     try {
-      const res = await axios.get(`https://budget-tracker-okow.onrender.com/get-budget/${selectedDate}`);
+      const res = await axios.get(`${API_BASE_URL}/get-budget/${selectedDate}`);
       setFormData(res.data);
       setIsEditing(true);
     } catch (error) {
@@ -55,8 +58,8 @@ const EnterData = () => {
 
     try {
       const url = isEditing
-        ? `https://budget-tracker-okow.onrender.com/update-budget/${selectedDate}`
-        : "https://budget-tracker-okow.onrender.com/update-budget";
+        ? `${API_BASE_URL}/update-budget/${selectedDate}`
+        : `${API_BASE_URL}/update-budget`;
       const method = isEditing ? "put" : "post";
 
       await axios[method](url, { date: selectedDate, ...formData });
@@ -78,7 +81,7 @@ const EnterData = () => {
     if (!window.confirm(`Are you sure you want to delete the entry for ${selectedDate}?`)) return;
 
     try {
-      await axios.delete(`https://budget-tracker-okow.onrender.com/delete-budget/${selectedDate}`);
+      await axios.delete(`${API_BASE_URL}/delete-budget/${selectedDate}`);
       alert("Entry deleted successfully!");
       setFormData({
         total_sales: "",

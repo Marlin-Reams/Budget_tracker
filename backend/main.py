@@ -1,10 +1,15 @@
 from datetime import datetime, timedelta
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, BackgroundTasks
 from firebase_config import db
 from pydantic import BaseModel
 import calendar
 import math
+import subprocess
 from fastapi.middleware.cors import CORSMiddleware
+from scripts.fetch_emails import fetch_latest_email
+from scripts.parse_pdf import extract_store_data
+from scripts.insert_data import insert_data
+import os
 
 app = FastAPI()
 
@@ -142,6 +147,7 @@ def get_progress(month: str):
 @app.get("/calculate-targets")
 def calculate_targets(month: str):
     try:
+        print(f"?? API HIT: /calculate-targets with month={month}")
         # Extract year and month from input (e.g., "2025-02")
         year, month = map(int, month.split("-"))
 
@@ -150,13 +156,15 @@ def calculate_targets(month: str):
 
         # Get today's date
         today = datetime.today().date()
+        
 
         # Set the first and last day of the entered month
         first_day_of_month = datetime(year, month, 1).date()
         last_day_of_month = datetime(year, month, total_days_in_month).date()
 
         # Calculate remaining days (if in past, return 0)
-        days_left = max(0, (last_day_of_month - today).days)
+        days_left = max(0, (last_day_of_month - today).days + 1)
+        print(f"🔢 Days Left (after fix): {days_left}")
 
         # Retrieve the budget for the specified month
         budget_doc = db.collection("monthly_budgets").document(f"{year}-{str(month).zfill(2)}").get()
@@ -193,3 +201,48 @@ def calculate_targets(month: str):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+
+    # ✅ Fetch Latest Email
+@app.get("/fetch-email")
+def fetch_email(background_tasks: BackgroundTasks):
+    """Triggers fetching the latest email and parsing attached PDF."""
+    background_tasks.add_task(subprocess.run, ["python", "scripts/fetch_emails.py"])
+    return {"message": "Fetching latest email in the background."}
+
+# ✅ Parse the Most Recent PDF
+@app.get("/parse-pdf")
+def parse_pdf(background_tasks: BackgroundTasks):
+    """Triggers parsing the most recent PDF from the reports folder."""
+    background_tasks.add_task(subprocess.run, ["python", "scripts/parse_pdf.py"])
+    return {"message": "Parsing the latest PDF in the background."}
+
+# ✅ Insert Data into Firebase
+@app.get("/insert-data")
+def insert_data(background_tasks: BackgroundTasks):
+    """Triggers inserting parsed PDF data into the Firestore database."""
+    background_tasks.add_task(subprocess.run, ["python", "scripts/insert_data.py"])
+    return {"message": "Inserting data into the database in the background."}
+
+@app.post("/fetch-and-insert")
+def fetch_and_insert_data(background_tasks: BackgroundTasks):
+    """Fetches the latest email, extracts sales data from PDF, and inserts it into Firestore."""
+    try:
+        # ✅ Step 1: Fetch latest email with a PDF attachment
+        pdf_path = fetch_latest_email()
+        if not pdf_path:
+            return {"message": "No new reports found."}
+
+        # ✅ Step 2: Extract sales data from PDF
+        store_data = extract_store_data(pdf_path, "003050")  # Adjust for store ID
+        if not store_data:
+            return {"message": "No valid sales data found in the report."}
+
+        # ✅ Step 3: Insert into Firestore
+        report_date = store_data.pop("report_date")  # Remove date from dict to use separately
+        insert_data(report_date, store_data)
+
+        return {"message": "Sales data successfully inserted!", "data": store_data}
+
+    except Exception as e:
+        return {"error": str(e)}

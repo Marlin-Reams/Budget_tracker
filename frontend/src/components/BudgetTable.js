@@ -16,7 +16,12 @@ const BudgetTable = ({ progress, monthlyGoal }) => {
   const month = new Date().getMonth() + 1; // Get current month (1-based)
   const year = new Date().getFullYear();
   const daysInMonth = new Date(year, month, 0).getDate(); // Dynamically get days in month
-  const expectedProgressPercent = (today / daysInMonth) * 100; // Expected % complete
+
+  const expectedDaysCompleted = Math.max(1, today - 1); // ✅ Ensure at least 1 day is counted
+  const expectedProgressPercent = (expectedDaysCompleted / daysInMonth) * 100; // ✅ EXCLUDES TODAY
+
+  console.log("📌 Expected Days Completed (Excluding Today):", expectedDaysCompleted);
+  console.log("📌 Expected Progress %:", expectedProgressPercent.toFixed(2));
 
   // Determines "At Risk" status
   const getRiskStatus = (progress, goal) => {
@@ -26,20 +31,21 @@ const BudgetTable = ({ progress, monthlyGoal }) => {
 
     if (progressPercentage >= expectedProgressPercent) return { status: "✅ On Track", color: "green" };
     if (progressPercentage >= expectedProgressPercent * 0.8) return { status: "⚠️ Warning", color: "orange" };
-    return { status: "🚨 At Risk", color: "red" };
+    return { status: "❌ At Risk", color: "red" };
   };
 
   return (
     <Card sx={{ border: "3px solid #C8102E", backgroundColor: "#F4F4F4", padding: "15px", marginBottom: "20px" }}>
       <CardContent>
         <Typography variant="h5" sx={{ color: "#0047BA", mb: 2 }}>📊 Monthly Budget Goals</Typography>
+        
 
-        {/* ✅ Legend Section */}
+        {/* 🏆 Legend Section */}
         <div style={{ marginBottom: "10px", fontSize: "14px" }}>
           <strong>Legend:</strong>
           <span style={{ color: "green", marginLeft: "10px" }}>✅ On Track</span>
           <span style={{ color: "orange", marginLeft: "10px" }}>⚠️ Warning</span>
-          <span style={{ color: "red", marginLeft: "10px" }}>🚨 At Risk</span>
+          <span style={{ color: "red", marginLeft: "10px" }}>❌ At Risk</span>
         </div>
 
         {monthlyGoal ? (
@@ -85,6 +91,10 @@ const BudgetTable = ({ progress, monthlyGoal }) => {
 };
 
 export default BudgetTable;
+
+
+
+
 
 
 
