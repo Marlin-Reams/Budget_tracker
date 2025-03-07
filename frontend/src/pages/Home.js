@@ -113,8 +113,9 @@ import MonthSelector from "../components/MonthSelector";
 import AdjustedDailyTargets from "../components/AdjustedDailyTargets";
 import DailyMessage from "../components/DailyMessage";
 import { useNavigate } from "react-router-dom";
+import API_BASE_URL from "../config";
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://budget-tracker-okow.onrender.com";
+// const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://budget-tracker-okow.onrender.com";
 
 const Home = () => {
   const [progress, setProgress] = useState({});

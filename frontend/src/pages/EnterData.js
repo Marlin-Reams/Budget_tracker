@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Container, Button, TextField, Typography } from "@mui/material";
+import API_BASE_URL from "../config";
 
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://budget-tracker-okow.onrender.com";
+// const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://budget-tracker-okow.onrender.com";
 
 const EnterData = () => {
   const [selectedDate, setSelectedDate] = useState("");
