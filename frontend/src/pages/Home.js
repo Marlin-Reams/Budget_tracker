@@ -22,9 +22,9 @@
 //     const month = String(today.getMonth() + 1).padStart(2, "0"); // Ensure 2-digit format
 //     return `${year}-${month}`;
 //   };
-  
+
 //   const [month, setMonth] = useState(getCurrentMonth());
-  
+
 
 //   useEffect(() => {
 //     console.log("Fetching data for month:", month);
@@ -32,13 +32,13 @@
 //       try {
 //         const progressRes = await axios.get(`${API_BASE_URL}/get-progress?month=${month}`);
 //         console.log("Progress Data:", progressRes.data.progress);
-    
+
 //         const targetsRes = await axios.get(`${API_BASE_URL}/calculate-targets?month=${month}`);
 //         console.log("?? Targets Data from API:", targetsRes.data.daily_targets);
-    
+
 //         const goalRes = await axios.get(`${API_BASE_URL}/get-monthly-budget?month=${month}`);
 //         console.log("Monthly Goal Data:", goalRes.data);
-    
+
 //         setProgress(progressRes.data.progress);
 //         setTargets(targetsRes.data.daily_targets);  // ? This must be valid
 //         setMonthlyGoal(goalRes.data);
@@ -46,10 +46,10 @@
 //         console.error("? Error fetching data:", error);
 //       }
 //     };
-  
+
 //     fetchData();
 //   }, [month]);
-  
+
 
 //   const navigate = useNavigate();
 
@@ -72,7 +72,7 @@
 //       <Typography variant="h4" sx={{ my: 3, color: "#C8102E" }}>
 //         🔥 Firestone Budget Dashboard - {month}
 //       </Typography>
-      
+
 //       <MonthSelector month={month} setMonth={setMonth} />
 //       <DailyMessage progress={progress} monthlyGoal={monthlyGoal} />
 
@@ -97,7 +97,7 @@
 // >
 //     Fetch Latest Report
 // </Button>
-    
+
 //   </div>
 //     </Container>
 //   );
@@ -115,75 +115,74 @@ import DailyMessage from "../components/DailyMessage";
 import { useNavigate } from "react-router-dom";
 import API_BASE_URL from "../config";
 
-// const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://budget-tracker-okow.onrender.com";
-
 const Home = () => {
   const [progress, setProgress] = useState({});
   const [monthlyGoal, setMonthlyGoal] = useState({});
   const [targets, setTargets] = useState(null);
-
-  const getCurrentMonth = () => {
+  const [month, setMonth] = useState(() => {
     const today = new Date();
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, "0"); // Ensure 2-digit format
+    const month = String(today.getMonth() + 1).padStart(2, "0");
     return `${year}-${month}`;
-  };
-
-  const [month, setMonth] = useState(getCurrentMonth());
-
-  useEffect(() => {
-    console.log("?? Fetching data for month:", month);
-    
-    const fetchData = async () => {
-      try {
-        const progressRes = await axios.get(`${API_BASE_URL}/get-progress?month=${month}`);
-        const targetsRes = await axios.get(`${API_BASE_URL}/calculate-targets?month=${month}`);
-        const goalRes = await axios.get(`${API_BASE_URL}/get-monthly-budget?month=${month}`);
-
-        setProgress(progressRes.data.progress);
-        setTargets(targetsRes.data.daily_targets);
-        setMonthlyGoal(goalRes.data);
-
-        console.log("? Progress Data:", progressRes.data.progress);
-        console.log("?? Targets Data:", targetsRes.data.daily_targets);
-        console.log("?? Monthly Goal Data:", goalRes.data);
-      } catch (error) {
-        console.error("? Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, [month]);
+  });
 
   const navigate = useNavigate();
 
+  const fetchData = async () => {
+    try {
+      const progressRes = await axios.get(`${API_BASE_URL}/get-progress?month=${month}`);
+      const targetsRes = await axios.get(`${API_BASE_URL}/calculate-targets?month=${month}`);
+      const goalRes = await axios.get(`${API_BASE_URL}/get-monthly-budget?month=${month}`);
+
+      setProgress(progressRes.data.progress);
+      setTargets(targetsRes.data.daily_targets);
+      setMonthlyGoal(goalRes.data);
+
+      // console.log("? Progress Data:", progressRes.data.progress);
+      // console.log("?? Targets Data:", targetsRes.data.daily_targets);
+      // console.log("?? Monthly Goal Data:", goalRes.data);
+    } catch (error) {
+      console.error("? Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [month]);
+
   const handleFetchAndInsert = async () => {
     try {
-      const res = await fetch(`${API_BASE_URL}/fetch-and-insert`, { method: "POST" });
+      const res = await fetch("/run-ingest", {
+        method: "POST"
+      });
+
+      // const res = await fetch(`${API_BASE_URL}/run-ingest`, {
+      //   method: "POST",
+      // });
       const data = await res.json();
-      alert(data.message);
+
+      if (data.status === "success") {
+        alert(`✅ Report fetched & inserted:\n${data.output}`);
+        fetchData(); // Refresh dashboard data
+      } else {
+        alert(`❌ Ingest failed:\n${data.error}`);
+      }
     } catch (error) {
-      alert("? Error fetching or inserting data.");
+      alert("❌ Failed to contact server:\n" + error.message);
     }
   };
 
   return (
     <Container>
       <Typography variant="h4" sx={{ my: 3, color: "#C8102E" }}>
-      🏎 Firestone Budget Dashboard - {month}
+        🏎 Firestone Budget Dashboard - {month}
       </Typography>
 
+
       <MonthSelector month={month} setMonth={setMonth} />
-      <DailyMessage progress={progress} monthlyGoal={monthlyGoal} />
-
-      <BudgetTable progress={progress} monthlyGoal={monthlyGoal} />
-      <AdjustedDailyTargets progress={progress} targets={targets} monthlyGoal={monthlyGoal} />
-      <ProgressCharts progress={progress} monthlyGoal={monthlyGoal} />
-
-      {/* Navigate to the Staff Goals Page */}
       <div style={{ marginTop: "20px" }}>
         <h2>🏆 Staff Goals</h2>
-        <Button 
+        <Button
           variant="contained"
           onClick={() => navigate("/staff-goals", { state: { monthlyGoal, progress } })}
           sx={{ fontSize: "18px", backgroundColor: "#0047BA", color: "white" }}
@@ -197,12 +196,22 @@ const Home = () => {
         >
           🗟 Fetch Latest Report
         </Button>
+
       </div>
+
+      <DailyMessage progress={progress} monthlyGoal={monthlyGoal} />
+
+      <BudgetTable progress={progress} monthlyGoal={monthlyGoal} />
+      <AdjustedDailyTargets
+        progress={progress}
+        targets={targets}
+        monthlyGoal={monthlyGoal}
+      />
+      <ProgressCharts progress={progress} monthlyGoal={monthlyGoal} />
+
+
     </Container>
   );
 };
 
 export default Home;
-
-
-

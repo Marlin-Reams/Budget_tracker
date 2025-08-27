@@ -20,8 +20,8 @@ const BudgetTable = ({ progress, monthlyGoal }) => {
   const expectedDaysCompleted = Math.max(1, today - 1); // ✅ Ensure at least 1 day is counted
   const expectedProgressPercent = (expectedDaysCompleted / daysInMonth) * 100; // ✅ EXCLUDES TODAY
 
-  console.log("📌 Expected Days Completed (Excluding Today):", expectedDaysCompleted);
-  console.log("📌 Expected Progress %:", expectedProgressPercent.toFixed(2));
+  // console.log("📌 Expected Days Completed (Excluding Today):", expectedDaysCompleted);
+  // console.log("📌 Expected Progress %:", expectedProgressPercent.toFixed(2));
 
   // Determines "At Risk" status
   const getRiskStatus = (progress, goal) => {

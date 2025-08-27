@@ -7,6 +7,7 @@ const MonthSelector = ({ month, setMonth }) => {
       <MenuItem value="2025-01">January 2025</MenuItem>
       <MenuItem value="2025-02">February 2025</MenuItem>
       <MenuItem value="2025-03">March 2025</MenuItem>
+      <MenuItem value="2025-08">August 2025</MenuItem>
     </Select>
   );
 };

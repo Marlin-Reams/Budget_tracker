@@ -235,20 +235,20 @@ const Home = () => {
   const [month, setMonth] = useState("2025-02");
 
   useEffect(() => {
-    console.log("Fetching data for month:", month);
+    // console.log("Fetching data for month:", month);
     const fetchData = async () => {
       try {
-        console.log("Fetching progress...");
+        // console.log("Fetching progress...");
         const progressRes = await axios.get(`https://budget-tracker-okow.onrender.com/get-progress?month=${month}`);
-        console.log("Progress Data:", progressRes.data.progress);
+        // console.log("Progress Data:", progressRes.data.progress);
   
-        console.log("Fetching targets...");
+        // console.log("Fetching targets...");
         const targetsRes = await axios.get(`https://budget-tracker-okow.onrender.com/calculate-targets?month=${month}`);
-        console.log("Targets Data:", targetsRes.data.daily_targets);
+        // console.log("Targets Data:", targetsRes.data.daily_targets);
   
-        console.log("Fetching monthly budget...");
+        // console.log("Fetching monthly budget...");
         const goalRes = await axios.get(`https://budget-tracker-okow.onrender.com/get-monthly-budget?month=${month}`);
-        console.log("Monthly Goal Data:", goalRes.data);
+        // console.log("Monthly Goal Data:", goalRes.data);
   
         setProgress(progressRes.data.progress);
         setTargets(targetsRes.data.daily_targets);

@@ -11,6 +11,7 @@ const App = () => {
         <Link to="/">Dashboard</Link> | 
         <Link to="/enter-data">Enter Data</Link> | 
         <Link to="/set-budget">Set Budget</Link>
+         
       </nav>
       <Routes>
         <Route path="/" element={<Home />} />

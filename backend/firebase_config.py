@@ -5,10 +5,10 @@ from firebase_admin import credentials, firestore
 # Ensure correct path
 CREDENTIALS_PATH = os.getenv("FIREBASE_CREDENTIALS_PATH", "firebase_credentials.json")
 
-print(f"🔍 Checking Firebase Credentials Path: {os.path.abspath(CREDENTIALS_PATH)}")
+print(f" Checking Firebase Credentials Path: {os.path.abspath(CREDENTIALS_PATH)}")
 
 if not os.path.exists(CREDENTIALS_PATH):
-    raise ValueError(f"🔥 FIREBASE_CREDENTIALS_PATH not found at {CREDENTIALS_PATH}")
+    raise ValueError(f" FIREBASE_CREDENTIALS_PATH not found at {CREDENTIALS_PATH}")
 
 # Initialize Firebase
 cred = credentials.Certificate(CREDENTIALS_PATH)

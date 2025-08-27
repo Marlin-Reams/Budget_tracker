@@ -5,6 +5,9 @@ from pydantic import BaseModel
 import calendar
 import math
 from fastapi.middleware.cors import CORSMiddleware
+import subprocess
+from fastapi.responses import JSONResponse
+
 
 app = FastAPI()
 
@@ -193,3 +196,30 @@ def calculate_targets(month: str):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@app.post("/run-ingest")
+async def run_ingest():
+    try:
+        result = subprocess.run(
+            ["python", "ingest.py"],
+            capture_output=True,
+            text=True
+        )
+        print("STDOUT:", result.stdout)
+        print("STDERR:", result.stderr)
+
+        if result.returncode == 0:
+            return {
+                "status": "success",
+                "output": result.stdout
+            }
+        else:
+            return JSONResponse(
+                status_code=500,
+                content={"status": "error", "error": result.stderr},
+            )
+    except Exception as e:
+        return JSONResponse(
+            status_code=500,
+            content={"status": "error", "error": str(e)},
+        )

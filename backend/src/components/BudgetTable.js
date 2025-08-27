@@ -11,8 +11,8 @@ const BudgetTable = ({ progress, monthlyGoal }) => {
     "boss_count",
     "rubber_gp"
   ];
-  console.log("BudgetTable - Progress Data:", progress);
-  console.log("BudgetTable - Monthly Goal Data:", monthlyGoal);
+  // console.log("BudgetTable - Progress Data:", progress);
+  // console.log("BudgetTable - Monthly Goal Data:", monthlyGoal);
 
 
   const getProgressColor = (percentage) => {
@@ -42,7 +42,7 @@ const BudgetTable = ({ progress, monthlyGoal }) => {
                 const progressValue = progress?.[key] || 0;
                 const remainingValue = Math.max(0, goalValue - progressValue);
                 const isCurrency = ["total_sales", "service_sales", "cfna_sales", "rubber_gp"].includes(key);
-                console.log(`Category: ${key}, Goal: ${goalValue}, Progress: ${progressValue}, Percentage: ${percentage}%`);
+                // console.log(`Category: ${key}, Goal: ${goalValue}, Progress: ${progressValue}, Percentage: ${percentage}%`);
 
 
                 // Calculate percentage

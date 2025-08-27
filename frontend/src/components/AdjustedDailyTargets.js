@@ -105,8 +105,8 @@ import { Card, CardContent, Typography } from "@mui/material";
 
 
 const AdjustedDailyTargets = ({ progress, monthlyGoal, targets }) => {
-  console.log("?? AdjustedDailyTargets - Progress Data:", progress);
-  console.log("?? AdjustedDailyTargets - Monthly Goal Data:", monthlyGoal);
+  // console.log("?? AdjustedDailyTargets - Progress Data:", progress);
+  // console.log("?? AdjustedDailyTargets - Monthly Goal Data:", monthlyGoal);
   if (!progress || !monthlyGoal || !targets) {
     return <Typography>Loading data...</Typography>;
   }

@@ -10,6 +10,9 @@ from scripts.fetch_emails import fetch_latest_email
 from scripts.parse_pdf import extract_store_data
 from scripts.insert_data import insert_data
 import os
+import subprocess
+from fastapi.responses import JSONResponse
+import asyncio
 
 app = FastAPI()
 
@@ -246,3 +249,39 @@ def fetch_and_insert_data(background_tasks: BackgroundTasks):
 
     except Exception as e:
         return {"error": str(e)}
+    
+@app.post("/run-ingest")
+async def run_ingest():
+    try:
+        script_path = os.path.abspath(os.path.join("scripts", "ingest.py"))
+        cwd_path = os.path.dirname(script_path)
+
+        # Run subprocess in a background thread
+        loop = asyncio.get_event_loop()
+        result = await loop.run_in_executor(
+            None,
+            lambda: subprocess.run(
+                ["python", script_path],
+                cwd=cwd_path,
+                capture_output=True,
+                text=True
+            )
+        )
+
+        print("STDOUT:\n", result.stdout)
+        print("STDERR:\n", result.stderr)
+
+        if result.returncode == 0:
+            return {"status": "success", "output": result.stdout}
+        else:
+            return JSONResponse(
+                status_code=500,
+                content={"status": "error", "stderr": result.stderr, "stdout": result.stdout},
+            )
+
+    except asyncio.CancelledError:
+        print("⚠️ Task was cancelled due to app shutdown")
+        return JSONResponse(status_code=500, content={"error": "Ingest task cancelled during shutdown"})
+
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"error": str(e)})
