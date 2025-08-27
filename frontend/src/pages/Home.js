@@ -151,26 +151,22 @@ const Home = () => {
   }, [month]);
 
   const handleFetchAndInsert = async () => {
-    try {
-      const res = await fetch("/run-ingest", {
-        method: "POST"
-      });
+  try {
+    const res = await fetch(`${API_BASE_URL}/run-ingest`, {
+      method: "POST"
+    });
+    const data = await res.json();
 
-      // const res = await fetch(`${API_BASE_URL}/run-ingest`, {
-      //   method: "POST",
-      // });
-      const data = await res.json();
-
-      if (data.status === "success") {
-        alert(`✅ Report fetched & inserted:\n${data.output}`);
-        fetchData(); // Refresh dashboard data
-      } else {
-        alert(`❌ Ingest failed:\n${data.error}`);
-      }
-    } catch (error) {
-      alert("❌ Failed to contact server:\n" + error.message);
+    if (data.status === "success") {
+      alert(`✅ Report fetched & inserted:\n${data.output}`);
+      fetchData(); // Refresh dashboard data
+    } else {
+      alert(`❌ Ingest failed:\n${data.error}`);
     }
-  };
+  } catch (error) {
+    alert("❌ Failed to contact server:\n" + error.message);
+  }
+};
 
   return (
     <Container>

@@ -4,7 +4,7 @@ import os
 # ✅ Ensure the script can find `firebase_config.py`
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from firebase_config import db  # ✅ Import Firestore DB
+from firebase_client import db  # ✅ Import Firestore DB
 from datetime import datetime
 
 def insert_data(report_date, store_data):

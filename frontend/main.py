@@ -1,12 +1,29 @@
 from datetime import datetime, timedelta
 from fastapi import FastAPI, HTTPException
-from firebase_config import db
+# from firebase_config import db
 from pydantic import BaseModel
 import calendar
 import math
 from fastapi.middleware.cors import CORSMiddleware
 import subprocess
 from fastapi.responses import JSONResponse
+
+import os
+import json
+import firebase_admin
+from firebase_admin import credentials, firestore
+
+# Load Firebase credentials from Render environment variable
+firebase_json = os.environ.get("FIREBASE_CREDENTIALS_JSON")
+
+if not firebase_json:
+    raise ValueError("FIREBASE_CREDENTIALS_JSON environment variable not set")
+
+cred_dict = json.loads(firebase_json)
+cred = credentials.Certificate(cred_dict)
+firebase_admin.initialize_app(cred)
+
+db = firestore.client()
 
 
 app = FastAPI()

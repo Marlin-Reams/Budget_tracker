@@ -76,7 +76,7 @@ def _normalize(store_data: dict) -> dict:
 
 def inline_insert(report_date: str, store_data: dict, *, collection="budget_entries"):
     """Fallback if writer.insert_data is unavailable."""
-    from firebase_config import db
+    from firebase_client import db
     iso = _ensure_iso_date(report_date)
     payload = _normalize(store_data)
     db.collection(collection).document(iso).set(payload, merge=True)

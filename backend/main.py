@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from fastapi import FastAPI, HTTPException, BackgroundTasks
-from firebase_config import db
+from firebase_client import db
 from pydantic import BaseModel
 import calendar
 import math
