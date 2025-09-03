@@ -51,4 +51,4 @@ out/
 *.zip
 
 backend/firebase_credentials.json
-
+**/service-account-key.json
