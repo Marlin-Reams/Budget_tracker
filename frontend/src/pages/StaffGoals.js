@@ -110,8 +110,12 @@ const StaffGoals = () => {
     localStorage.setItem("staffList", JSON.stringify(updatedList));
   };
 
+if (!monthlyGoal || Object.keys(monthlyGoal).length === 0) {
+  return <Typography sx={{ color: "#C8102E", m: 3 }}>⚠️ Monthly budget data not loaded. Please return to dashboard and re-enter.</Typography>;
+}
 
   return (
+    
     <Grid container spacing={3}>
       <Grid item xs={12}>
         <Card sx={{ border: "3px solid #C8102E", backgroundColor: "#F4F4F4", padding: "15px" }}>
@@ -220,14 +224,49 @@ const StaffGoals = () => {
                   />
                 ))}
 
+                {monthlyGoal && (
+  <div style={{ marginTop: "1rem" }}>
+    <Typography variant="body2" sx={{ fontWeight: "bold" }}>
+      Expected Monthly Output:
+    </Typography>
+    {Object.keys(defaultAllocation).map((key) => {
+      const total = monthlyGoal[key] || 0;
+      const pct = staff.allocation[key] / 100;
+      const goal = total * pct;
+
+      // 🧠 Format: currency for sales, integer for units
+      const isUnit = key.includes("units");
+      const formattedGoal = isUnit
+        ? Math.round(goal) // No $ sign for units
+        : `$${Math.round(goal)}`; // Round to nearest dollar
+
+      return (
+        <Typography key={key} variant="body2">
+          {key.replace("_", " ")}: {formattedGoal}
+        </Typography>
+      );
+    })}
+  </div>
+)}
+
+
                 <Button
                   variant="contained"
                   sx={{ mt: 2, backgroundColor: "#0047BA" }}
                   onClick={() => {
                     console.log("📌 Navigating to StaffPerformance - Data Being Sent:", { staff, progress, monthlyGoal });
                     navigate(`/staff-performance/${staff.name.replace(/\s+/g, "-")}`, {
-                      state: { staff, progress, monthlyGoal },
-                    });
+  state: {
+    staff,
+    progress,
+    monthlyGoal,
+    staffMonthlyGoals: Object.keys(staff.allocation).reduce((acc, key) => {
+      acc[key] = ((monthlyGoal[key] || 0) * (staff.allocation[key] / 100)).toFixed(2);
+      return acc;
+    }, {}),
+  },
+});
+
                   }}
                 >
                   View Goals

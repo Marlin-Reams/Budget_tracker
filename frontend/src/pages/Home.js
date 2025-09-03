@@ -116,6 +116,7 @@ import { useNavigate } from "react-router-dom";
 import API_BASE_URL from "../config";
 
 const Home = () => {
+  const [dataLoaded, setDataLoaded] = useState(false);
   const [progress, setProgress] = useState({});
   const [monthlyGoal, setMonthlyGoal] = useState({});
   const [targets, setTargets] = useState(null);
@@ -128,45 +129,52 @@ const Home = () => {
 
   const navigate = useNavigate();
 
+
+
   const fetchData = async () => {
     try {
       const progressRes = await axios.get(`${API_BASE_URL}/get-progress?month=${month}`);
       const targetsRes = await axios.get(`${API_BASE_URL}/calculate-targets?month=${month}`);
       const goalRes = await axios.get(`${API_BASE_URL}/get-monthly-budget?month=${month}`);
 
+      console.log("✅ Progress Loaded:", progressRes.data.progress);
+      console.log("✅ Targets Loaded:", targetsRes.data.daily_targets);
+      console.log("✅ Monthly Goal Loaded:", goalRes.data);
+
       setProgress(progressRes.data.progress);
       setTargets(targetsRes.data.daily_targets);
       setMonthlyGoal(goalRes.data);
 
-      // console.log("? Progress Data:", progressRes.data.progress);
-      // console.log("?? Targets Data:", targetsRes.data.daily_targets);
-      // console.log("?? Monthly Goal Data:", goalRes.data);
+      // ✅ All data is now available
+      setDataLoaded(true);
     } catch (error) {
       console.error("? Error fetching data:", error);
+      setDataLoaded(false);
     }
   };
+
 
   useEffect(() => {
     fetchData();
   }, [month]);
 
   const handleFetchAndInsert = async () => {
-  try {
-    const res = await fetch(`${API_BASE_URL}/run-ingest`, {
-      method: "POST"
-    });
-    const data = await res.json();
+    try {
+      const res = await fetch(`${API_BASE_URL}/run-ingest`, {
+        method: "POST"
+      });
+      const data = await res.json();
 
-    if (data.status === "success") {
-      alert(`✅ Report fetched & inserted:\n${data.output}`);
-      fetchData(); // Refresh dashboard data
-    } else {
-      alert(`❌ Ingest failed:\n${data.error}`);
+      if (data.status === "success") {
+        alert(`✅ Report fetched & inserted:\n${data.output}`);
+        fetchData(); // Refresh dashboard data
+      } else {
+        alert(`❌ Ingest failed:\n${data.error}`);
+      }
+    } catch (error) {
+      alert("❌ Failed to contact server:\n" + error.message);
     }
-  } catch (error) {
-    alert("❌ Failed to contact server:\n" + error.message);
-  }
-};
+  };
 
   return (
     <Container>
@@ -178,13 +186,27 @@ const Home = () => {
       <MonthSelector month={month} setMonth={setMonth} />
       <div style={{ marginTop: "20px" }}>
         <h2>🏆 Staff Goals</h2>
-        <Button
-          variant="contained"
-          onClick={() => navigate("/staff-goals", { state: { monthlyGoal, progress } })}
-          sx={{ fontSize: "18px", backgroundColor: "#0047BA", color: "white" }}
-        >
-          🥅 Click Here to View Staff Goals
-        </Button>
+        {dataLoaded && (
+          <Button
+            variant="contained"
+            onClick={() =>
+              navigate("/staff-goals", {
+                state: { monthlyGoal, progress }
+              })
+            }
+            sx={{ fontSize: "18px", backgroundColor: "#0047BA", color: "white" }}
+          >
+            🥅 Click Here to View Staff Goals
+          </Button>
+        )}
+
+        {!dataLoaded && (
+          <Typography variant="body2" sx={{ mt: 1, color: "#C8102E" }}>
+            ⏳ Loading budget data from server...
+          </Typography>
+        )}
+
+
         <Button
           variant="contained"
           sx={{ backgroundColor: "#0047BA", mt: 2 }}

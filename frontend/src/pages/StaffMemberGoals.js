@@ -5,12 +5,14 @@ import { Card, CardContent, Typography, Grid } from "@mui/material";
 const StaffMemberGoals = () => {
   const { staffName } = useParams();
   const location = useLocation();
-  const stateData = location.state || {}; // ✅ Extract state safely
-  const { staff, progress, monthlyGoal } = location.state || {}; // ✅ Fix to extract correctly
+  const stateData = location.state || {};
+  const { staff, progress } = location.state || {};
 
-  console.log("📌 Location State Data:", stateData); // ✅ Debugging
-
-  if (!staff || !monthlyGoal || !progress) {
+  console.log("📌 Location State Data:", stateData);
+  if (!staff || !staff.expectedMonthly || !progress) {
+    console.log("📌 staff:", staff);
+    console.log("📌 expectedMonthly:", staff?.expectedMonthly);
+    console.log("📌 progress:", progress);
     return <Typography>Loading staff goal data...</Typography>;
   }
 
@@ -21,24 +23,33 @@ const StaffMemberGoals = () => {
   const daysInMonth = new Date(year, month, 0).getDate();
   const remainingDays = Math.max(1, daysInMonth - today.getDate());
 
-  // ✅ Calculate Monthly Goals based on staff allocation
-  const staffMonthlyGoals = Object.keys(staff.allocation).reduce((acc, key) => {
-    acc[key] = ((monthlyGoal[key] || 0) * (staff.allocation[key] / 100)).toFixed(2);
-    return acc;
-  }, {});
+  // ✅ Use expectedMonthly directly
+  const staffMonthlyGoals = staff.expectedMonthly;
 
-  // ✅ Calculate Daily Goals (Fixed)
-  const staffDailyGoals = Object.keys(staffMonthlyGoals).reduce((acc, key) => {
-    acc[key] = (staffMonthlyGoals[key] / daysInMonth).toFixed(2);
-    return acc;
-  }, {});
+  // ✅ Calculate Daily Goals
+  const workingDays = staff?.workingDays || 22; // default to 22 if not provided
 
-  // ✅ Calculate Adjusted Daily Goals based on store's current performance
+const staffDailyGoals = Object.keys(staffMonthlyGoals).reduce((acc, key) => {
+  acc[key] = (staffMonthlyGoals[key] / workingDays).toFixed(2);
+  return acc;
+}, {});
+
+  // ✅ Adjusted Daily Goals
   const staffAdjustedDailyGoals = Object.keys(staffMonthlyGoals).reduce((acc, key) => {
-    const remaining = Math.max(0, staffMonthlyGoals[key] - (progress[key] || 0)); // Prevent negative values
+    const remaining = Math.max(0, staffMonthlyGoals[key] - (progress[key] || 0));
     acc[key] = (remaining / remainingDays).toFixed(2);
     return acc;
   }, {});
+
+  // ✅ Only show these keys
+  const allowedKeys = ["TOTAL SALES", "SERVICE SALES", "BRANDED UNITS", "TOTAL UNITS"];
+
+  // ✅ Format
+  const formatValue = (key, value) => {
+    const unitKeys = ["BRANDED UNITS", "TOTAL UNITS"];
+    const formatted = Number(value).toLocaleString();
+    return unitKeys.includes(key.toUpperCase()) ? formatted : `$${formatted}`;
+  };
 
   return (
     <Grid container spacing={3}>
@@ -59,12 +70,14 @@ const StaffMemberGoals = () => {
                 </tr>
               </thead>
               <tbody>
-                {Object.keys(staffMonthlyGoals).map((key) => (
-                  <tr key={key}>
-                    <td>{key.replace("_", " ").toUpperCase()}</td>
-                    <td>${Number(staffMonthlyGoals[key]).toLocaleString()}</td>
-                  </tr>
-                ))}
+                {Object.keys(staffMonthlyGoals)
+                  .filter((key) => allowedKeys.includes(key.toUpperCase()))
+                  .map((key) => (
+                    <tr key={key}>
+                      <td>{key.replace("_", " ").toUpperCase()}</td>
+                      <td>{formatValue(key, staffMonthlyGoals[key])}</td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
 
@@ -79,18 +92,20 @@ const StaffMemberGoals = () => {
                 </tr>
               </thead>
               <tbody>
-                {Object.keys(staffDailyGoals).map((key) => (
-                  <tr key={key}>
-                    <td>{key.replace("_", " ").toUpperCase()}</td>
-                    <td>${Number(staffDailyGoals[key]).toLocaleString()}</td>
-                    <td style={{ fontWeight: "bold" }}>
-                      ${Number(staffAdjustedDailyGoals[key]).toLocaleString()}
-                    </td>
-                  </tr>
-                ))}
+                {Object.keys(staffDailyGoals)
+                  .filter((key) => allowedKeys.includes(key.toUpperCase()))
+                  .map((key) => (
+                    <tr key={key}>
+                      <td>{key.replace("_", " ").toUpperCase()}</td>
+                      <td>{formatValue(key, staffDailyGoals[key])}</td>
+                      <td style={{ fontWeight: "bold" }}>
+                        {formatValue(key, staffAdjustedDailyGoals[key])}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
-
+            
           </CardContent>
         </Card>
       </Grid>
@@ -99,5 +114,6 @@ const StaffMemberGoals = () => {
 };
 
 export default StaffMemberGoals;
+
 
 
